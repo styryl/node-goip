@@ -1,0 +1,30 @@
+{
+  "name": "goip",
+  "version": "0.1.0",
+  "description": "Simple server and client for goip gateways",
+  "main": "index.js",
+  "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+      "goip",
+      "sms",
+      "server",
+      "client"
+  ],
+  "author": "Michal Styrylski",
+  "license": "MIT",
+  "dependencies": {
+    "fast-xml-parser": "^3.16.0",
+    "node-fetch": "^2.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/styryl/node-goip.git"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.1",
+    "sinon": "^9.0.2"
+  }
+}
