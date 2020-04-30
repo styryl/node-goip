@@ -106,7 +106,7 @@ server.run();
 ```javascript
 const {SocketSms} = require('goip');
 
-const sms = new goip.SocketSms(
+const sms = new SocketSms(
 	'192.168.0.11', // Goip address
 	9991, // Goip port
 	'goip_password' // Goip password
@@ -163,8 +163,9 @@ const sms = new HttpSms(
     'login', // Goip login
     'password', // Goip password
     {
-        'waitForStatus': true, // Wait and check sending status
-        'waitTime': 10 // Time in seconds 
+		'waitForStatus': false, // Wait and check sending status
+		'waitTries': 10, // Number of attempts
+		'waitTime': 1000 // Time in  milliseconds
 	});
 
 sms.send('999999999', 'test message').then((response) => {
@@ -190,6 +191,44 @@ const sms = new HttpSms('http://192.168.0.11',1,'login','password',{
         const response2 = await sms.send('999999999','test sms message 2');
         console.log(response1);
         console.log(response2);
+    } catch (error) {
+        console.log(error);
+    }
+
+})();
+```
+
+##### Example 3 - checking status by id
+
+```javascript
+const {HttpSms} = require('goip');
+const sms = new HttpSms(
+    'http://192.168.0.11', // Goip http address
+    1, // Line number
+    'login', // Goip login
+    'password', // Goip password
+);
+
+( async () => {
+
+    try {
+        const response = await sms.send('999999999', 'test message');
+
+        console.log(response);
+
+        setTimeout(async () => {
+            const isSend = await sms.isSend( response.id );
+
+            if( isSend ) {
+                console.log('sms sent')
+            }
+        
+            if( !isSend ) {
+                console.log('sms not sent')
+            }
+
+        }, 5000);
+
     } catch (error) {
         console.log(error);
     }
