@@ -1,19 +1,23 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const Message = require('../../../lib/messages/message');
+const DeliverMessage = require('../../../lib/messages/deliver');
 const Request = require('../../../lib/request');
-const samples = require('../../samples');
 
-describe('MessageTest', function() {
+describe('DeliverTest', function() {
 
     const requestStub = sinon.createStubInstance(Request);
     let message;
 
     beforeEach(()=>{
-        message = new Message( requestStub );
+        message = new DeliverMessage( requestStub );
     });
 
     describe('#constructor()', () => {
+
+        it('should be instance of Message', () => {
+            expect(message).to.be.instanceOf(Message);
+        });
 
         it('should be create with properties', () => {
             expect(message).to.have.property('_request');
@@ -61,9 +65,37 @@ describe('MessageTest', function() {
     });
 
     describe('#ack()', () => {
-  
-        it('should return null', () => {
-            expect(message.ack()).to.be.null;
+        it('should return ack message', () => {
+            requestStub.get.withArgs('deliver').returns('123');
+            expect(message.ack()).to.be.equal('DELIVER 123 OK');
+        });
+    });
+
+    describe('#deliver()', () => {
+        it('should return deliver count', () => {
+            requestStub.get.withArgs('deliver').returns('123');
+            expect(message.deliver()).to.be.equal('123');
+        });
+    });
+
+    describe('#smsNo()', () => {
+        it('should return sms no count', () => {
+            requestStub.get.withArgs('sms_no').returns('22');
+            expect(message.smsNo()).to.be.equal('22');
+        });
+    });
+
+    describe('#state()', () => {
+        it('should return state', () => {
+            requestStub.get.withArgs('state').returns('test state');
+            expect(message.state()).to.be.equal('test state');
+        });
+    });
+
+    describe('#num()', () => {
+        it('should return phone number', () => {
+            requestStub.get.withArgs('num').returns('999999999');
+            expect(message.num()).to.be.equal('999999999');
         });
     });
 

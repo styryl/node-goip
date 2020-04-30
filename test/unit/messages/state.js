@@ -1,19 +1,23 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const Message = require('../../../lib/messages/message');
+const StateMessage = require('../../../lib/messages/state');
 const Request = require('../../../lib/request');
-const samples = require('../../samples');
 
-describe('MessageTest', function() {
+describe('StateTest', function() {
 
     const requestStub = sinon.createStubInstance(Request);
     let message;
 
     beforeEach(()=>{
-        message = new Message( requestStub );
+        message = new StateMessage( requestStub );
     });
 
     describe('#constructor()', () => {
+
+        it('should be instance of Message', () => {
+            expect(message).to.be.instanceOf(Message);
+        });
 
         it('should be create with properties', () => {
             expect(message).to.have.property('_request');
@@ -61,10 +65,25 @@ describe('MessageTest', function() {
     });
 
     describe('#ack()', () => {
-  
-        it('should return null', () => {
-            expect(message.ack()).to.be.null;
+        it('should return ack message', () => {
+            requestStub.get.withArgs('state').returns('123');
+            expect(message.ack()).to.be.equal('STATE 123 OK');
         });
     });
+
+    describe('#state()', () => {
+        it('should return state count', () => {
+            requestStub.get.withArgs('state').returns('123');
+            expect(message.state()).to.be.equal('123');
+        });
+    });
+
+    describe('#gsmRemainState()', () => {
+        it('should return gsm state', () => {
+            requestStub.get.withArgs('gsm_remain_state').returns('test state');
+            expect(message.gsmRemainState()).to.be.equal('test state');
+        });
+    });
+
 
 });

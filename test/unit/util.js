@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const util = require('../../lib/util');
 
-describe('util', () => {
+describe('utilTest', () => {
 
   describe('#randomInt()', () => {
 

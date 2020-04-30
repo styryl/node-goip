@@ -1,19 +1,23 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const Message = require('../../../lib/messages/message');
+const NotSupportedMessage = require('../../../lib/messages/not-supported');
 const Request = require('../../../lib/request');
-const samples = require('../../samples');
 
-describe('MessageTest', function() {
+describe('NotSupportedTest', function() {
 
     const requestStub = sinon.createStubInstance(Request);
     let message;
 
     beforeEach(()=>{
-        message = new Message( requestStub );
+        message = new NotSupportedMessage( requestStub );
     });
 
     describe('#constructor()', () => {
+
+        it('should be instance of Message', () => {
+            expect(message).to.be.instanceOf(Message);
+        });
 
         it('should be create with properties', () => {
             expect(message).to.have.property('_request');
@@ -61,9 +65,9 @@ describe('MessageTest', function() {
     });
 
     describe('#ack()', () => {
-  
-        it('should return null', () => {
-            expect(message.ack()).to.be.null;
+        it('should return id from request get method', () => {
+            requestStub.get.withArgs('id').returns(1);
+            expect(message.id()).to.be.deep.equal(1);
         });
     });
 

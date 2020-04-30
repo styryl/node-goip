@@ -1,83 +1,108 @@
-const assert = require('chai').assert;
+const expect = require('chai').expect;
 const Request = require('../../lib/request');
 const samples = require('../samples');
 
-describe('Request', () => {
+describe('RequestTest', () => {
 
-  let requestClass = new Request( samples.buffers.req, '0.0.0.0', 3000 );
+    const requestClass = new Request( samples.buffers.req, '0.0.0.0', 3000 );
 
-  describe('#address()', () => {
+    describe('#constructor()', () => {
 
-    it('should return address', () => {
-      assert.equal( '0.0.0.0', requestClass.address() );
+        it('should be created with properties', () => {
+
+            expect(requestClass).to.have.property('_buffer');
+            expect(requestClass).to.have.property('_address');
+            expect(requestClass).to.have.property('_port');
+            expect(requestClass).to.have.property('_attributes');
+
+        });
+
+        it('property _port should be an number', () => {
+            expect(requestClass._port).to.be.an('number');
+        });
+
+        it('property _address should be an buffer', () => {
+            expect(requestClass._buffer).to.be.an('string');
+        });
+
+        it('property _address should be an string', () => {
+            expect(requestClass._address).to.be.an('string');
+        });
+
+        it('property _attributes should be an object', () => {
+            expect(requestClass._attributes).to.be.an('object');
+        });
+
     });
 
-  });
+    describe('#address()', () => {
 
-  describe('#port()', () => {
+        it('should return address', () => {
+            expect(  requestClass.address() ).to.be.equal( '0.0.0.0' );
+        });
 
-    it('should return port', () => {
-      assert.equal( 3000, requestClass.port() );
     });
 
-  });
+    describe('#port()', () => {
 
-  describe('#buffer()', () => {
+        it('should return port', () => {
+            expect(requestClass.port() ).to.be.equal(3000);
+        });
 
-    it('should return raw buffer', () => {
-      assert.equal( samples.buffers.req, requestClass.buffer() );
     });
 
-  });
+    describe('#buffer()', () => {
 
-  describe('#_parse()', () => {
+        it('should return raw buffer', () => {
+            expect( requestClass.buffer() ).to.be.equal(samples.buffers.req);
+        });
 
-    it('should parse from raw buffer to object', () => {
-      assert.deepEqual( {
-        key1:'val1',
-        key2:'val2',
-        key3:'val3'
-      }, requestClass._parse('key1:val1;key2:val2;key3:val3') );
     });
 
-  });
+    describe('#_parse()', () => {
 
-  describe('#has()', () => {
+        it('should parse from raw buffer to object', () => {
+            expect( requestClass._parse('key1:val1;key2:val2;key3:val3') ).to.be.deep.equal(requestClass._parse('key1:val1;key2:val2;key3:val3'));
+        });
 
-    it('should return true if key exists', () => {
-      assert.isTrue( requestClass.has('req') );
     });
 
-    it('should return false if key dont exists', () => {
-      assert.isFalse( requestClass.has('req2') );
+    describe('#has()', () => {
+
+        it('should return true if key exists', () => {
+            expect( requestClass.has('req') ).to.be.true;
+        });
+
+        it('should return false if key dont exists', () => {
+            expect( requestClass.has('req2') ).to.be.false;
+        });
+
     });
 
-  });
+    describe('#get()', () => {
 
-  describe('#get()', () => {
+        it('should return value if key exist', () => {
+            expect( requestClass.get('req') ).to.be.equal('27');
+        });
 
-    it('should return value if key exist', () => {
-      assert.equal( 27, requestClass.get('req') );
+        it('should return null if key dont exists', () => {
+            expect( requestClass.get('req2') ).to.be.null;
+        });
+
     });
 
-    it('should return null if key dont exists', () => {
-      assert.isNull( requestClass.get('req2') );
+    describe('#all()', () => {
+
+        const requestClass = new Request( samples.buffers.fake, '0.0.0.0', 3000 );
+
+        it('should return all attributes', () => {
+            expect(requestClass.all() ).to.be.deep.equal({
+              key1:'val1',
+              key2:'val2',
+              key3:'val3' 
+            });
+        });
+
     });
-
-  });
-
-  describe('#all()', () => {
-
-    const requestClass = new Request( samples.buffers.fake, '0.0.0.0', 3000 );
-
-    it('should return all attributes', () => {
-      assert.deepEqual({
-        key1:'val1',
-        key2:'val2',
-        key3:'val3' 
-      }, requestClass.all() );
-    });
-
-  });
 
 });

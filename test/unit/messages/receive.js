@@ -1,19 +1,23 @@
 const expect = require('chai').expect;
 const sinon = require('sinon');
 const Message = require('../../../lib/messages/message');
+const ReceiveMessage = require('../../../lib/messages/receive');
 const Request = require('../../../lib/request');
-const samples = require('../../samples');
 
-describe('MessageTest', function() {
+describe('ReceiveTest', function() {
 
     const requestStub = sinon.createStubInstance(Request);
     let message;
 
     beforeEach(()=>{
-        message = new Message( requestStub );
+        message = new ReceiveMessage( requestStub );
     });
 
     describe('#constructor()', () => {
+
+        it('should be instance of Message', () => {
+            expect(message).to.be.instanceOf(Message);
+        });
 
         it('should be create with properties', () => {
             expect(message).to.have.property('_request');
@@ -61,9 +65,30 @@ describe('MessageTest', function() {
     });
 
     describe('#ack()', () => {
-  
-        it('should return null', () => {
-            expect(message.ack()).to.be.null;
+        it('should return ack message', () => {
+            requestStub.get.withArgs('receive').returns('123');
+            expect(message.ack()).to.be.equal('RECEIVE 123 OK');
+        });
+    });
+
+    describe('#receive()', () => {
+        it('should return receive count', () => {
+            requestStub.get.withArgs('receive').returns('123');
+            expect(message.receive()).to.be.equal('123');
+        });
+    });
+
+    describe('#srcnum()', () => {
+        it('should return phone number', () => {
+            requestStub.get.withArgs('srcnum').returns('999999999');
+            expect(message.srcnum()).to.be.equal('999999999');
+        });
+    });
+
+    describe('#msg()', () => {
+        it('should return text message', () => {
+            requestStub.get.withArgs('msg').returns('test message');
+            expect(message.msg()).to.be.equal('test message');
         });
     });
 
